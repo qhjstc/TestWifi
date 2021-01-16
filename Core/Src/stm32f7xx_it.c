@@ -28,10 +28,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-extern u8 Wifi_Buff[255];
-extern u8 Wifi_data[Wifi_Size];
-extern int Wifi_Index;
-extern u8 Wifi_DataSta;
+
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -60,6 +57,7 @@ extern u8 Wifi_DataSta;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim3;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
@@ -220,6 +218,20 @@ void DMA1_Stream1_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM3 global interrupt.
+  */
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART1 global interrupt.
   */
 void USART1_IRQHandler(void)
@@ -243,25 +255,74 @@ void USART3_IRQHandler(void)
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
   /* USER CODE BEGIN USART3_IRQn 1 */
-  if(RESET != __HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE)){ //check whether it is idle or not?
-      __HAL_UART_CLEAR_IDLEFLAG(&huart3);
-      if(Wifi_DataSta == 0) {
-          HAL_UART_DMAStop(&huart3);               //stop uart3 receive
-          for (Wifi_Index = 0;  Wifi_Index < strlen(Wifi_Buff); Wifi_Index++) {
-            Wifi_data[Wifi_Index] = Wifi_Buff[Wifi_Index];
-          }
-          Wifi_DataSta = 1;                        //data is ok
-          Wifi_DataAnalysis();                     //start analysis
-          memset(Wifi_Buff, 0, 255);         //wipe data;
-      }
-      else {
-          HAL_UART_Receive_DMA(&huart3, (u8 *) Wifi_Buff, 255);
-      }
-  }
+//  if(RESET != __HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE)){ //check whether it is idle or not?
+//      __HAL_UART_CLEAR_IDLEFLAG(&huart3);
+//      if(Wifi_DataSta == 0) {
+//          HAL_UART_DMAStop(&huart3);               //stop uart3 receive
+//          for (Wifi_Index = 0;  Wifi_Index < strlen(Wifi_Buff); Wifi_Index++) {
+//            Wifi_data[Wifi_Index] = Wifi_Buff[Wifi_Index];
+//          }
+//          Wifi_DataSta = 1;                        //data is ok
+//          Wifi_DataAnalysis();                     //start analysis
+//          memset(Wifi_Buff, 0, 255);         //wipe data;
+//      }
+//      else {
+//          HAL_UART_Receive_DMA(&huart3, (u8 *) Wifi_Buff, 255);
+//      }
+//  }
   /* USER CODE END USART3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
-
+extern u8 Wifi_data[Wifi_Size];
+extern int Wifi_Index;
+extern u8 Wifi_DataSta;
+extern u8 Rx_Buff[4];
+extern u8 Rx_data[50];
+int Wifi_Count = 0;
+//串口回调函数
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+    static int i = 0;
+    UNUSED(huart);
+    if(huart == &huart1) {          //judge whether it is Usart1
+        Rx_data[i] = Rx_Buff[0];
+        if (Rx_data[i] == '\n') {
+            printf("Start send information\r\n");
+            Wifi_Send(Rx_data);
+            memset(Rx_data, 0, 50);
+            i = 0;
+        } else {
+            i++;
+        }
+        HAL_UART_Receive_IT(&huart1, (u8 *) Rx_Buff, 1);
+    }
+    else if(huart == &huart3){
+        if(Wifi_Index >= Wifi_Size){
+            Wifi_Index = 0;
+        }
+        if(Wifi_DataSta == 0 && Wifi_Count == 0) {                       //if the wifi buff is full
+            Wifi_data[Wifi_Index++] = Wifi_Buff[0];
+            Wifi_Count = 10;
+            HAL_TIM_Base_Start_IT(&htim3);
+        }
+        else if(Wifi_DataSta == 0){
+           Wifi_data[Wifi_Index++] = Wifi_Buff[0];
+        }
+    }
+}
+//tim interrupt
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+    if(htim = &htim3){
+        if(Wifi_Count > 0) {
+            Wifi_Count--;
+        }
+        else{
+            Wifi_DataSta = 1;                        //data is ok
+            Wifi_DataAnalysis();                     //start analysis
+            HAL_UART_DMAStop(&huart3);               //stop uart3 receive
+            HAL_TIM_Base_Start_IT(&htim3);
+        }
+    }
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

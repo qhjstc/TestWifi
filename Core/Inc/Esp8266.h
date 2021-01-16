@@ -12,10 +12,12 @@
 /*****外接设备********/
 
 #define Wifi_Size 255
+#define Wifi_BuffSize 1
 
-
+extern u8 Rx_Buff[4];
+extern u8 Rx_data[50];
 extern u8 Wifi_DataSta;
-extern u8 Wifi_Buff[255];
+extern u8 Wifi_Buff[Wifi_BuffSize];
 extern u8 Wifi_data[Wifi_Size];
 extern int Wifi_Index;
 

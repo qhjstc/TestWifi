@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -57,9 +58,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-u8 Rx_Buff[4] = {};
-u8 Rx_data[50] = {};
-extern u8 Wifi_Buff[255];
+
+extern u8 Wifi_Buff[Wifi_BuffSize];
 extern u8 Wifi_data[Wifi_Size];
 /* USER CODE END 0 */
 
@@ -94,6 +94,7 @@ int main(void)
   MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
    HAL_Delay(500);
    printf("Hello This is Stm32F767! ~ -.-\r\n");
@@ -172,37 +173,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-//串口回调函数
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-    static int i = 0;
-    UNUSED(huart);
-    if(huart == &huart1) {          //judge whether it is Usart1
-        Rx_data[i] = Rx_Buff[0];
-        if (Rx_data[i] == '\n') {
-            printf("Start send information\r\n");
-            Wifi_Send(Rx_data);
-            memset(Rx_data, 0, 50);
-            i = 0;
-        } else {
-            i++;
-        }
-        HAL_UART_Receive_IT(&huart1, (u8 *) Rx_Buff, 1);
-    }
-    else if(huart == &huart3){
-        if(Wifi_DataSta == 0) {                      //if the wifi buff is full
-            HAL_UART_DMAStop(&huart3);               //stop uart3 receive
-            for (Wifi_Index = 0;  Wifi_Index < strlen(Wifi_Buff); Wifi_Index++) {
-                Wifi_data[Wifi_Index] = Wifi_Buff[Wifi_Index];
-            }
-            Wifi_DataSta = 1;                        //data is ok
-            Wifi_DataAnalysis();                     //start analysis
-            memset(Wifi_Buff, 0, 255);         //wipe data;
-        }
-        else {
-            HAL_UART_Receive_DMA(&huart3, (u8 *) Wifi_Buff, 255);
-        }
-    }
-}
+
 /* USER CODE END 4 */
 
 /**
