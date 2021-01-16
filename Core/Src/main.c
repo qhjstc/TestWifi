@@ -59,7 +59,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 u8 Rx_Buff[4] = {};
 u8 Rx_data[50] = {};
-extern u8 Wifi_Buff[1];
+extern u8 Wifi_Buff[255];
 extern u8 Wifi_data[Wifi_Size];
 /* USER CODE END 0 */
 
@@ -189,14 +189,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
         HAL_UART_Receive_IT(&huart1, (u8 *) Rx_Buff, 1);
     }
     else if(huart == &huart3){
-        if(Wifi_Buff[0] != 0) {
-            Wifi_data[Wifi_Index] = Wifi_Buff[0];
-            if (Wifi_Index >= (Wifi_Size - 1)) {           //if the data has been full, wipe data;
-                memset(Wifi_data, 0, 50);         //wipe data;
-                Wifi_Index = 0;
-            } else {
-                Wifi_Index++;
+        if(Wifi_DataSta == 0) {                      //if the wifi buff is full
+            HAL_UART_DMAStop(&huart3);               //stop uart3 receive
+            for (Wifi_Index = 0;  Wifi_Index < strlen(Wifi_Buff); Wifi_Index++) {
+                Wifi_data[Wifi_Index] = Wifi_Buff[Wifi_Index];
             }
+            Wifi_DataSta = 1;                        //data is ok
+            Wifi_DataAnalysis();                     //start analysis
+            memset(Wifi_Buff, 0, 255);         //wipe data;
+        }
+        else {
+            HAL_UART_Receive_DMA(&huart3, (u8 *) Wifi_Buff, 255);
         }
     }
 }

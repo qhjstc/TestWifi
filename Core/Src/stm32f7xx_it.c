@@ -28,9 +28,10 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-extern u8 Wifi_Buff[1];
+extern u8 Wifi_Buff[255];
 extern u8 Wifi_data[Wifi_Size];
 extern int Wifi_Index;
+extern u8 Wifi_DataSta;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -244,12 +245,18 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 1 */
   if(RESET != __HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE)){ //check whether it is idle or not?
       __HAL_UART_CLEAR_IDLEFLAG(&huart3);
-      HAL_UART_DMAStop(&huart3);
-      printf("We have receive the wifi data\r\n");
-      printf(Wifi_data);
-      memset(Wifi_data, 0, Wifi_Size);         //wipe data;
-      Wifi_Index = 0;
-      HAL_UART_Receive_DMA(&huart3, (u8*)Wifi_Buff, 1);
+      if(Wifi_DataSta == 0) {
+          HAL_UART_DMAStop(&huart3);               //stop uart3 receive
+          for (Wifi_Index = 0;  Wifi_Index < strlen(Wifi_Buff); Wifi_Index++) {
+            Wifi_data[Wifi_Index] = Wifi_Buff[Wifi_Index];
+          }
+          Wifi_DataSta = 1;                        //data is ok
+          Wifi_DataAnalysis();                     //start analysis
+          memset(Wifi_Buff, 0, 255);         //wipe data;
+      }
+      else {
+          HAL_UART_Receive_DMA(&huart3, (u8 *) Wifi_Buff, 255);
+      }
   }
   /* USER CODE END USART3_IRQn 1 */
 }

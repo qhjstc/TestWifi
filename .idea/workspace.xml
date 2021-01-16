@@ -14,7 +14,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="376e2cfa-c755-47fa-833c-44ee9dcb3dff" name="Default Changelist" comment="" />
+    <list default="true" id="376e2cfa-c755-47fa-833c-44ee9dcb3dff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/Esp8266.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Esp8266.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/Esp8266.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Esp8266.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/stm32f7xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32f7xx_it.c" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,7 +90,7 @@
       <option name="presentableId" value="Default" />
       <updated>1610711996155</updated>
       <workItem from="1610712014591" duration="7319000" />
-      <workItem from="1610759324332" duration="19132000" />
+      <workItem from="1610759324332" duration="29548000" />
     </task>
     <servers />
   </component>
@@ -92,15 +98,6 @@
     <option name="version" value="3" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Core/Src/Esp8266.c</url>
-          <line>25</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="com.jetbrains.cidr.embedded.openocd.conf.type">
         <watch expression="Wifi_data" language="ObjectiveC" />
