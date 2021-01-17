@@ -13,6 +13,13 @@
 
 #define Wifi_Size 255
 #define Wifi_BuffSize 1
+#define Message_Size 20
+
+struct Esp8266{
+    u8 Message[Message_Size][Wifi_Size];
+    u8 Size;
+};
+
 
 extern u8 Rx_Buff[4];
 extern u8 Rx_data[50];
@@ -25,5 +32,7 @@ void Wifi_Init();
 void Wifi_Send(u8 *data);
 void Wifi_ClientConfigure();
 void Wifi_DataAnalysis();
+void Wifi_DataHandle(u8 *data);
+void Link_Serve();
 
 #endif //TESTWIFI_ESP8266_H

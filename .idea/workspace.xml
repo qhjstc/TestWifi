@@ -14,10 +14,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="376e2cfa-c755-47fa-833c-44ee9dcb3dff" name="Default Changelist" comment="this is improved version date:2021 1 16">
+    <list default="true" id="376e2cfa-c755-47fa-833c-44ee9dcb3dff" name="Default Changelist" comment="this is improved and useful version date:2021 1 17">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/Esp8266.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Esp8266.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Esp8266.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Esp8266.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32f7xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32f7xx_it.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +85,7 @@
       <workItem from="1610712014591" duration="7319000" />
       <workItem from="1610759324332" duration="29969000" />
       <workItem from="1610808240265" duration="1811000" />
-      <workItem from="1610854595359" duration="2675000" />
+      <workItem from="1610854595359" duration="7631000" />
     </task>
     <task id="LOCAL-00001" summary="this is improved version">
       <created>1610807529261</created>
@@ -108,7 +108,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610809981366</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="this is improved and useful version date:2021 1 17">
+      <created>1610857397551</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1610857397551</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -129,7 +136,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="this is improved version" />
     <MESSAGE value="this is improved version date:2021 1 16" />
-    <option name="LAST_COMMIT_MESSAGE" value="this is improved version date:2021 1 16" />
+    <MESSAGE value="this is improved and useful version date:2021 1 17" />
+    <option name="LAST_COMMIT_MESSAGE" value="this is improved and useful version date:2021 1 17" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

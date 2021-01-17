@@ -16,6 +16,8 @@ u8 Wifi_DataSta = 0;         //1 is the data ok, 0 is preparing
 u8 Wifi_Buff[Wifi_BuffSize] = {};
 u8 Wifi_data[Wifi_Size] = {};
 int Wifi_Index = 0;
+struct Esp8266 Esp8266Wifi;
+
 void Wifi_Init(){
     HAL_UART_Receive_DMA(&huart3, (u8*) Wifi_Buff, Wifi_BuffSize);
 /************************************/
@@ -48,7 +50,7 @@ void Wifi_ClientConfigure() {
 //Analyse the Wifi_data
 void Wifi_DataAnalysis(){
     if(Wifi_DataSta == 1) {
-       // printf("We have receive the wifi data\r\n");
+        //printf("We have receive the wifi data\r\n");
         printf(Wifi_data);
         memset(Wifi_data, 0, Wifi_Size);         //wipe data;
         Wifi_Index = 0;
@@ -61,19 +63,25 @@ void Wifi_DataAnalysis(){
 void Wifi_DataHandle(u8 *data){
     int start_sta = 0;
     for(int i = 0; i < strlen(data)-1; i++){
-        if(data[i] == '0' && data[i+1] == '0'){    //if the data is 11, indicates that data transmission begins
+        if(start_sta == 0 && data[i] == '0' && data[i+1] == '0'){    //if the data is 11, indicates that data transmission begins
             start_sta++;
             printf("Data begin!\r\n");
         }
         else if(start_sta > 0 && data[i] == '1' && data[i+1] == '0'){
             start_sta = 0;
+            Esp8266Wifi.Size++;
             printf("Data End!\r\n");
+
         }
         else if(start_sta == 1){                //the main part of data
-
+            Esp8266Wifi.Message[Esp8266Wifi.Size][i] = Wifi_data[i];
         }
     }
     if(start_sta == 1){
         printf("Data error!\r\n");
     }
+}
+
+void Link_Serve(){
+    Wifi_Send("AT+CIPSTART=\"TCP\",\"192.168.43.177\",8080\r\n");
 }
