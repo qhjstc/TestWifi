@@ -317,10 +317,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
             Wifi_Count--;
         }
         else{
+            HAL_TIM_Base_Stop_IT(&htim3);
             Wifi_DataSta = 1;                        //data is ok
             Wifi_DataAnalysis();                     //start analysis
             HAL_UART_DMAStop(&huart3);               //stop uart3 receive
-            HAL_TIM_Base_Start_IT(&htim3);
+            HAL_UART_Receive_DMA(&huart3, (u8*) Wifi_Buff, Wifi_BuffSize);
         }
     }
 }

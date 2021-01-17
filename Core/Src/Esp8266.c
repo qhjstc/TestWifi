@@ -8,7 +8,7 @@
  * ESP8266ต๗สิ
  *
 ******************************************************/
-#define TransmitDelay 100
+#define TransmitDelay 20
 
 u8 Rx_Buff[4] = {};
 u8 Rx_data[50] = {};
@@ -37,12 +37,10 @@ void Wifi_ClientConfigure() {
     Wifi_Send("AT+RST\r\n");
     HAL_Delay(4000);          //Wait 3 seconds RST to complete configuration
     Wifi_Send("AT+CWJAP=\"qhj\",\"12345678qhj\"\r\n");
-    HAL_Delay(100);
+    HAL_Delay(10000);
     Wifi_Send("AT+CIPMUX=0\r\n");
     HAL_Delay(TransmitDelay);
     Wifi_Send("AT+CIPMODE=1\r\n");
-    HAL_Delay(TransmitDelay);
-    Wifi_Send("AT+CIPSEND\r\n");
     HAL_Delay(TransmitDelay);
     Wifi_Send("AT\r\n");     //check whether the wifi modular is ok?
 }
@@ -50,15 +48,32 @@ void Wifi_ClientConfigure() {
 //Analyse the Wifi_data
 void Wifi_DataAnalysis(){
     if(Wifi_DataSta == 1) {
-        printf("We have receive the wifi data\r\n");
+       // printf("We have receive the wifi data\r\n");
         printf(Wifi_data);
         memset(Wifi_data, 0, Wifi_Size);         //wipe data;
+        Wifi_Index = 0;
         Wifi_DataSta = 0;
     }
 }
 
 //set the wifi agreement
-//the star: "000"  end: "001"
-void Wifi_DataHandle(){
-    
+//the star: "00"  end: "10"
+void Wifi_DataHandle(u8 *data){
+    int start_sta = 0;
+    for(int i = 0; i < strlen(data)-1; i++){
+        if(data[i] == '0' && data[i+1] == '0'){    //if the data is 11, indicates that data transmission begins
+            start_sta++;
+            printf("Data begin!\r\n");
+        }
+        else if(start_sta > 0 && data[i] == '1' && data[i+1] == '0'){
+            start_sta = 0;
+            printf("Data End!\r\n");
+        }
+        else if(start_sta == 1){                //the main part of data
+
+        }
+    }
+    if(start_sta == 1){
+        printf("Data error!\r\n");
+    }
 }
